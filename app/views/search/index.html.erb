@@ -12,7 +12,8 @@
 <table>
   <thead>
     <tr>
-      <th>ID</th>
+      <!-- <th>ID</th> -->
+      <th>Order No</th>
       <th>Status</th>
     </tr>
   </thead>
@@ -20,7 +21,8 @@
   <tbody>
     <% @parcels.each do |parcel| %>
       <tr>
-        <td><%= parcel.id %></td>
+        <!-- <td><%#= parcel.id %></td> -->
+        <td><%= parcel.unique_no %></td>
         <td><%= parcel.status %></td>
       </tr>
     <% end %>

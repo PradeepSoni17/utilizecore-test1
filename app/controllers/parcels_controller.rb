@@ -1,9 +1,11 @@
 class ParcelsController < ApplicationController
   before_action :set_parcel, only: %i[ show edit update destroy ]
+  before_action :get_users, :get_service_types, only: %i[new edit ]
 
   # GET /parcels or /parcels.json
   def index
-    @parcels = Parcel.all
+    # @parcels = Parcel.all
+    @parcels = Parcel.includes([:sender,:receiver, :service_type])
   end
 
   # GET /parcels/1 or /parcels/1.json
@@ -13,28 +15,29 @@ class ParcelsController < ApplicationController
   # GET /parcels/new
   def new
     @parcel = Parcel.new
-    @users = User.all.map{|user| [user.name_with_address, user.id]}
-    @service_types = ServiceType.all.map{|service_type| [service_type.name, service_type.id]}
+    ## @users = User.all.map{|user| [user.name_with_address, user.id]}
+    # @service_types = ServiceType.all.map{|service_type| [service_type.name, service_type.id]}
   end
 
   # GET /parcels/1/edit
   def edit
-    @users = User.all.map{|user| [user.name_with_address, user.id]}
-    @service_types = ServiceType.all.map{|service_type| [service_type.name, service_type.id]}
+    ## @users = User.all.map{|user| [user.name_with_address, user.id]}
+    # @service_types = ServiceType.all.map{|service_type| [service_type.name, service_type.id]}
   end
 
   # POST /parcels or /parcels.json
   def create
     @parcel = Parcel.new(parcel_params)
-
     respond_to do |format|
       if @parcel.save
         format.html { redirect_to @parcel, notice: 'Parcel was successfully created.' }
         format.json { render :show, status: :created, location: @parcel }
       else
         format.html do
-          @users = User.all.map{|user| [user.name_with_address, user.id]}
-          @service_types = ServiceType.all.map{|service_type| [service_type.name, service_type.id]} 
+          ## @users = User.all.map{|user| [user.name_with_address, user.id]}
+          # @service_types = ServiceType.all.map{|service_type| [service_type.name, service_type.id]} 
+          get_users
+          get_service_types
           render :new, status: :unprocessable_entity
         end
         format.json { render json: @parcel.errors, status: :unprocessable_entity }
@@ -56,11 +59,15 @@ class ParcelsController < ApplicationController
   end
 
   # DELETE /parcels/1 or /parcels/1.json
-  def destroy
-    @parcel.destroy
+  def destroy    
     respond_to do |format|
-      format.html { redirect_to parcels_url, notice: 'Parcel was successfully destroyed.' }
-      format.json { head :no_content }
+      if @parcel.destroy
+        format.html { redirect_to parcels_url, notice: 'Parcel was successfully destroyed.' }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to parcels_url, notice: 'Parcel was not destroyed.' }
+        format.json { head :no_content }          
+      end
     end
   end
 
@@ -75,5 +82,13 @@ class ParcelsController < ApplicationController
       params.require(:parcel).permit(:weight, :status, :service_type_id,
                                      :payment_mode, :sender_id, :receiver_id,
                                      :cost)
+    end
+
+    def get_users
+      @users = User.includes(:address).map{|user| [user.name_with_address, user.id]}
+    end
+
+    def get_service_types
+      @service_types = ServiceType.all.map{|service_type| [service_type.name, service_type.id]}          
     end
 end

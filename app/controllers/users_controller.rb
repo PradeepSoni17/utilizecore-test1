@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show edit update destroy ]
+  before_action :set_user, only: %i[ show update destroy ]
 
   # GET /users or /users.json
   def index
@@ -18,6 +18,7 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
+    @user = User.includes(:address).find(params[:id])
   end
 
   # POST /users or /users.json
@@ -65,7 +66,7 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(:name, :email, address_attributes: [:address_line_one, :address_line_two,
+      params.require(:user).permit(:name, :email, address_attributes: [:id,:address_line_one, :address_line_two,
                                                                        :city, :state, :country,
                                                                        :pincode, :mobile_number])
     end
