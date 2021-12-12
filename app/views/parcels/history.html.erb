@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Parcel History List</h1>
+
+<br /><br />
+
+<table>
+  <thead>
+    <tr>
+      <th>Parcel Unique No</th>
+      <th>Created At</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+    
+    <% if @parcel_record_histories.blank? %>
+      <tr><td colspan=""><center><%="No Record Present"%></center></td></tr>
+    <%else%>
+      <% @parcel_record_histories.each do |ph| %>
+        <tr>        
+          <td><%= ph.parcel.unique_no %></td>
+          <td><%= date_format(ph.created_at) %></td>
+          <td><%= ph.status %></td>
+        </tr>
+      <% end %>
+    <% end %>     
+  </tbody>
+</table>
+
+<%= link_to 'Back', parcels_path %>

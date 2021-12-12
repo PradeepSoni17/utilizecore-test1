@@ -1,11 +1,12 @@
 <p id="notice"><%= notice %></p>
 
-<h1>List Parcels</h1>
-
+<h1>Parcels List</h1>
 <br />
 
-<%= link_to 'New Parcel', new_parcel_path %>
-
+<h3> <%= link_to 'New Parcel', new_parcel_path %><h3>
+<% if can? :download_excel_file, Parcel %>
+  <b><%= link_to 'Downlod Report As Excel', download_excel_file_path(format: 'xlsx') %></b>
+<% end %>
 <br /><br />
 
 <table>
@@ -13,29 +14,45 @@
     <tr>
       <th>Unique No</th>
       <th>Weight</th>
+      <th>Cost</th>
       <th>Status</th>
       <th>Service Type</th>
       <th>Payment Mode</th>
       <th>Sender</th>
       <th>Receiver</th>
-      <th colspan="3">Actions</th>
+      <th colspan="5">Actions</th>
     </tr>
   </thead>
 
   <tbody>
-    <% @parcels.each do |parcel| %>
-      <tr>
-        <td><%= parcel.unique_no %></td>
-        <td><%= parcel.weight %></td>
-        <td><%= parcel.status %></td>
-        <td><%= parcel.service_type.name %></td>
-        <td><%= parcel.payment_mode %></td>
-        <td><%= parcel.sender.present? ? parcel.sender.name : "" %></td>
-        <td><%= parcel.receiver.present? ? parcel.receiver.name : "" %></td>
-        <td><%= link_to 'Show', parcel %></td>
-        <td><%= link_to 'Edit', edit_parcel_path(parcel) %></td>
-        <td><%= link_to 'Destroy', parcel, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
+    <% if @parcels.blank?%>
+      <tr><td colspan="8"><center><%= "No Record Found"%></center></td></tr>
+    <% else%>
+      <% @parcels.each do |parcel| %>
+        <tr>
+          <td><%= parcel.unique_no %></td>
+          <td><%= parcel.weight %></td>
+          <td><%= parcel.cost %></td>
+          <td><%= parcel.status %></td>
+          <td><%= parcel.service_type.name %></td>
+          <td><%= parcel.payment_mode %></td>
+          <td><%= parcel.sender.present? ? parcel.sender.name : "" %></td>
+          <td><%= parcel.receiver.present? ? parcel.receiver.name : "" %></td>
+          <td><%= link_to 'Show', parcel %></td>
+          <% if can? :update, Parcel %> 
+            <td><%= link_to 'Edit', edit_parcel_path(parcel) %></td>
+          <%end%>
+          <% if can? :destroy, Parcel %> 
+            <td><%= link_to 'Destroy', parcel, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          <%end%>
+          <% if can? :history, Parcel %> 
+            <td><%= link_to 'History', controller: "parcels", action: "history", id: parcel.id %></td>
+          <%end%>  
+          <% if can? :change_status, Parcel %> 
+            <td><%= link_to 'Change Status', controller: "parcels" ,action: "change_status" , id: parcel.id  %></td>
+          <%end%>
+        </tr>
+      <% end %>
+    <% end %>  
   </tbody>
 </table>

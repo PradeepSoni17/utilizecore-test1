@@ -1,4 +1,5 @@
-<%= form_with(model: user) do |form| %>
+<%#= form_with(model: user) do |form| %>
+<%= form_with url: "/users/new_user", scope: @user do |form| %>
   <% if user.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
@@ -17,9 +18,14 @@
   </div>
 
   <div class="field">
-    <%= form.label :email , 'Email *' %>
+    <%= form.label :email,'email *' %>
     <%= form.email_field :email %>
   </div>
+
+  <div class="field">
+    <%= form.label :role %><br />
+    <%= form.select :role_id, Role.all.map{|r| [r.name, r.id]} %>
+  </div>  
 
   <%= form.fields_for :address do |f| %>
     <%= render 'addresses/address', form: f %>

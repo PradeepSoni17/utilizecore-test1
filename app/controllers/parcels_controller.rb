@@ -1,11 +1,16 @@
 class ParcelsController < ApplicationController
-  before_action :set_parcel, only: %i[ show edit update destroy ]
+  before_action :set_parcel, only: %i[ show edit update destroy change_status update_status ]
   before_action :get_users, :get_service_types, only: %i[new edit ]
-
+  before_action :authenticate_user!
+  load_and_authorize_resource
+  
   # GET /parcels or /parcels.json
   def index
-    # @parcels = Parcel.all
-    @parcels = Parcel.includes([:sender,:receiver, :service_type])
+    if current_user.admin?
+      @parcels = Parcel.includes([:sender,:receiver, :service_type])
+    else
+      @parcels = Parcel.includes(:sender).where("sender_id =? or receiver_id =? ", current_user.id, current_user.id)
+    end  
   end
 
   # GET /parcels/1 or /parcels/1.json
@@ -28,6 +33,8 @@ class ParcelsController < ApplicationController
   # POST /parcels or /parcels.json
   def create
     @parcel = Parcel.new(parcel_params)
+    @parcel.created_by = current_user.id
+    @parcel.updated_by = current_user.id
     respond_to do |format|
       if @parcel.save
         format.html { redirect_to @parcel, notice: 'Parcel was successfully created.' }
@@ -71,6 +78,45 @@ class ParcelsController < ApplicationController
     end
   end
 
+  # show the parcel status 
+  def change_status
+
+  end
+
+
+  # Update Parcel status and send the notification both user sender and receiver
+  def update_status
+    respond_to do |format|
+      if @parcel.update_attribute(:status, params[:parcel][:status])
+        create_parcel_history
+        format.html { redirect_to parcels_url, notice: 'Parcel status was successfully updated.' }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def history
+    @parcel_record_histories =  ParcelRecordHistory.includes(:parcel).where("parcel_id=?",params[:id])
+  end
+
+  def parcel_export_reports
+    if params[:file_name].present?
+      send_file Rails.root.join("public", "reports/#{params[:file_name]}")
+    else
+      source_path = Rails.root.join("public", "reports")
+      @records =  Dir.entries(source_path) - %w[. ..]
+    end    
+  end
+
+  def download_excel_file
+    @parcels =  Parcel.includes([:sender,:receiver, :service_type])
+    respond_to do |format|
+      format.html
+      format.xlsx
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_parcel
@@ -91,4 +137,12 @@ class ParcelsController < ApplicationController
     def get_service_types
       @service_types = ServiceType.all.map{|service_type| [service_type.name, service_type.id]}          
     end
+
+    def create_parcel_history
+      @parcel_hisotry = ParcelRecordHistory.new
+      @parcel_hisotry.parcel_id = @parcel.id
+      @parcel_hisotry.status = params[:parcel][:status]
+      @parcel_hisotry.save
+    end
+    
 end

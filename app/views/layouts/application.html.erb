@@ -11,15 +11,8 @@
   </head>
 
   <body>
-
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/search">Search Orders</a></li>
-      <li><a href="/parcels">Parcels</a></li>
-      <li><a href="/users">Manage Users</a></li>
-      <li><a href="/service_types">Service Types</a></li>
-    </ul>
-
+    <a href="/search">Search Orders</a>
+    <%= render :partial => 'layouts/header' %>
     <%= yield %>
   </body>
 </html>

@@ -1,0 +1,23 @@
+<% if user_signed_in? %>
+  <center><h3> Welcome <%= current_user.name %> </h3></center>
+  <ul>
+    <li><a href="/parcels">Home</a></li>    
+    <% if can? :index, Role %>
+      <li><a href="/roles">Role</a></li>
+    <% end %>
+    <% if can? :index, Parcel %>  
+      <li><a href="/parcels">Parcels</a></li>
+    <% end %>
+    <% if can? :reports, Parcel %>
+      <li><a href="/parcel_export_reports">Reports</a></li>
+    <% end %>
+    <% if (can? :edit, User) and current_user.admin? %>
+      <li><a href="/users">Manage Users</a></li>
+    <% end %>  
+    <% if can? :create, ServiceType %>  
+      <li><a href="/service_types">Service Types</a></li>
+    <% end %>
+    <li><%= link_to "Sign Out", destroy_user_session_path, method: :delete %></li>
+  </ul>  
+  
+<% end %>

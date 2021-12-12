@@ -34,13 +34,17 @@
   <div class="field">
     <%= form.label :sender_id , 'Sender *' %>
     <%= form.select :sender_id, @users , {:include_blank => 'select sender'} %>
-    <%= link_to 'New Sender', new_user_path %>
+    <% if can? :new_user, User %>  
+      <%= link_to 'New Sender', new_user_path %>
+    <%end%>  
   </div>
 
   <div class="field">
     <%= form.label :receiver_id ,'Receiver *' %>
     <%= form.select :receiver_id, @users , {:include_blank => 'select receiver'} %>
-    <%= link_to 'New Receiver', new_user_path %>
+    <% if can? :new_user, User %>  
+      <%= link_to 'New Receiver', new_user_path %>
+    <% end%>  
   </div>
 
   <div class="field">

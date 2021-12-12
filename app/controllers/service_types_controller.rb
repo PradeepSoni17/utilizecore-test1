@@ -1,6 +1,6 @@
 class ServiceTypesController < ApplicationController
   before_action :set_service_type, only: %i[ show edit update destroy ]
-
+  load_and_authorize_resource
   # GET /service_types or /service_types.json
   def index
     @service_types = ServiceType.all

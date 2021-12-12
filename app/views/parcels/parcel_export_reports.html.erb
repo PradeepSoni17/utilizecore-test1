@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Parcel Reports List</h1>
+
+<br /><br />
+
+<table>
+  <thead>
+    <tr>
+      <th>Number</th>
+      <th>Created At</th>
+      <th>File Name</th>
+      
+    </tr>
+  </thead>
+
+  <tbody>
+    <% if @records.present? %>
+      <% @records.each.with_index do |file, index| %>
+        <tr>
+          <td><%= index + 1 %></td>
+          <td><%= file_date_format(file) %></td>
+          <td><%= link_to file, "parcel_export_reports?file_name=#{file}" %></td>
+          
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>

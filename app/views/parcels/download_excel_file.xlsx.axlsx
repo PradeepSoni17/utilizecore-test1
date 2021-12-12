@@ -1,0 +1,10 @@
+wb = xlsx_package.workbook
+
+
+wb.add_worksheet(name: "Parcel") do |sheet|
+  sheet.add_row %W[UniqueNo  Weight Cost Status ServiceType Payment_Mode Sender Receiver]
+
+  @parcels.each do |p|
+    sheet.add_row [p.unique_no,p.weight, p.cost, p.status, p.service_type.name ,p.payment_mode, (p.sender.name rescue ''), (p.receiver.name rescue '')]
+  end
+end
