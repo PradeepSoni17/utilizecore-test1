@@ -23,10 +23,10 @@ set :environment, :development
 set :output, {:error => "log/cron.log", :standard => "log/cron.log"}
 
 
-every 1.minute do
-  rake 'reports:parcle_report_excel'
-end
-
-# every 1.day, at: '12:00 am' do
-#   runner "reports.parcle_report_excel"
+# every 1.minute do
+#   rake 'reports:parcel_report_excel'
 # end
+
+every 1.day, at: '00:00 am' do
+  runner "reports.parcle_report_excel"
+end

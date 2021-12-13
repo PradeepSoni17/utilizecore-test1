@@ -1,6 +1,6 @@
 namespace :reports do
-  desc 'Parcle-Report-Excel-file'
-  task parcle_report_excel: :environment do
+  desc 'Parcel-Report-Excel-file'
+  task parcel_report_excel: :environment do
     puts "====== Parcle-Report-Generate On-#{Time.now.strftime('%d:%m:%Y-%H:%M')}==================="
   p = Axlsx::Package.new
   wb = p.workbook
