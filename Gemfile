@@ -53,13 +53,10 @@ group :test do
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'rake'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'devise'
 gem 'cancancan'
-gem 'axlsx'
-gem 'caxlsx_rails'
-gem 'whenever', require: false
+gem 'whenever'
 gem 'sidekiq'
 gem 'rubyzip'
 gem 'axlsx_rails'

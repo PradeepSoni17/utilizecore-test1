@@ -9,22 +9,25 @@
 
 <br /><br />
 
-<table>
+<table class="record_table">
   <thead>
     <tr>
-      <!-- <th>ID</th> -->
-      <th>Order No</th>
+      <th>S. No</th>
+      <th>Unique No</th>
       <th>Status</th>
     </tr>
   </thead>
 
   <tbody>
-    <% @parcels.each do |parcel| %>
+    <% @parcels.each_with_index do |parcel,index| %>
       <tr>
-        <!-- <td><%#= parcel.id %></td> -->
+        <td><%= index+1 %></td>
         <td><%= parcel.unique_no %></td>
         <td><%= parcel.status %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
+<% unless user_signed_in? %>
+  <%= link_to 'Back', users_path %>
+<% end %>  

@@ -20,7 +20,7 @@ class Parcel < ApplicationRecord
 	private
 
 	def send_notification
-		UserMailer.with(parcel: self).status_email.deliver_later
+		UserMailer.with(parcel: self).status_email.deliver_later 
 	end
 
 	def set_unique_no
@@ -28,6 +28,6 @@ class Parcel < ApplicationRecord
 	end
 
 	def status_update_notification	
-		UserMailer.with(parcel: self).status_update_email.deliver_later if self.saved_change_to_status?
+		UserMailer.with(parcel: self).status_update_email.deliver_later if (self.saved_change_to_status? and self.receiver.email.present?)
 	end
 end

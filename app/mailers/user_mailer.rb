@@ -14,7 +14,7 @@ class UserMailer < ApplicationMailer
     @sender = @parcel.sender
     @receiver = @parcel.receiver
     @url  = 'http://localhost:3000/search'
-    mail(to: @receiver.email, cc: @sender.email,  subject: 'Update Parcel Status Information')
+    mail(to: @receiver.email, cc: (@sender.email rescue ''),  subject: 'Update Parcel Status Information')
   end
 
   def registration_mail

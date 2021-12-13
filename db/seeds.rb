@@ -17,5 +17,18 @@ end
 		               state: "New Delhi", country: "India", pincode: 110111,
 		               mobile_number: '9999999999')
 	user.save
+
+
+r1 = Role.create({ name: 'Admin'})
+r2 = Role.create({ name: 'User'})
+
+user = User.find(1)
+user.update_attribute(role_id: ,'1')
+user.update_attribute(password:, "123456")
+
+user = User.find(2)
+user.update_attribute(role_id: ,'2')
+user.update_attribute(password:, "123456")
+
 end
 

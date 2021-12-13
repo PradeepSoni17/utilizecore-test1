@@ -12,6 +12,7 @@
 <table>
   <thead>
     <tr>
+      <th>S. No</th>
       <th>Unique No</th>
       <th>Weight</th>
       <th>Cost</th>
@@ -28,8 +29,9 @@
     <% if @parcels.blank?%>
       <tr><td colspan="8"><center><%= "No Record Found"%></center></td></tr>
     <% else%>
-      <% @parcels.each do |parcel| %>
+      <% @parcels.each_with_index do |parcel,index| %>
         <tr>
+          <td><%= index+1 %></td>
           <td><%= parcel.unique_no %></td>
           <td><%= parcel.weight %></td>
           <td><%= parcel.cost %></td>
@@ -40,7 +42,13 @@
           <td><%= parcel.receiver.present? ? parcel.receiver.name : "" %></td>
           <td><%= link_to 'Show', parcel %></td>
           <% if can? :update, Parcel %> 
-            <td><%= link_to 'Edit', edit_parcel_path(parcel) %></td>
+            <td>
+              <% if parcel.status == "Delivered"%>
+                <%= link_to 'Edit', edit_parcel_path(parcel),:class=>"disabled-link" %>
+              <% else %> 
+                <%= link_to 'Edit', edit_parcel_path(parcel) %>
+              <%end%>
+            </td>  
           <%end%>
           <% if can? :destroy, Parcel %> 
             <td><%= link_to 'Destroy', parcel, method: :delete, data: { confirm: 'Are you sure?' } %></td>
@@ -48,9 +56,16 @@
           <% if can? :history, Parcel %> 
             <td><%= link_to 'History', controller: "parcels", action: "history", id: parcel.id %></td>
           <%end%>  
-          <% if can? :change_status, Parcel %> 
-            <td><%= link_to 'Change Status', controller: "parcels" ,action: "change_status" , id: parcel.id  %></td>
-          <%end%>
+          
+          <% if can? :change_status, Parcel %>            
+            <td>
+              <% if parcel.status == "Delivered"%>
+                <%= link_to 'Change Status', "/parcels/change_status/#{parcel.id}" , :class=>"disabled-link" %>
+              <% else %> 
+                <%= link_to 'Change Status', controller: "parcels" ,action: "change_status" , id: parcel.id  %>
+              <%end%>  
+            </td>
+          <%end%>  
         </tr>
       <% end %>
     <% end %>  

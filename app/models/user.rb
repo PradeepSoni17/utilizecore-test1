@@ -25,7 +25,7 @@ class User < ApplicationRecord
   end
 
   def user_registration_notification
-  	UserMailer.with(user: self, password: self.password).registration_mail.deliver_later
+  	UserMailer.with(user: self, password: self.password).registration_mail.deliver_later if self.email.present?
 	end
 	protected
 
